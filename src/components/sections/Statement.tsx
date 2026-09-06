@@ -64,17 +64,11 @@ export function Statement() {
       aria-label="Statement"
       className="relative h-[170vh] bg-block text-block-fg"
     >
-      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-5 py-20">
-        <h2 className="display flex w-fit flex-col items-center gap-[2.2vw] text-[clamp(3rem,14vw,15rem)] leading-[0.95]">
-          {statement.map((line, i) => (
-            <span
-              key={line.text}
-              className={cn(
-                "relative block w-fit whitespace-nowrap",
-                line.from === "right" && "md:translate-x-[6%]",
-                i === statement.length - 1 && "md:-translate-x-[3%]",
-              )}
-            >
+      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-5 py-[12vh]">
+        {/* Size is capped by viewport height too, so the three lines always sit inside the screen with air above and below. */}
+        <h2 className="display flex w-fit flex-col items-center gap-[1.1vw] text-[clamp(2.75rem,min(10.5vw,20vh),12rem)] leading-[0.9]">
+          {statement.map((line) => (
+            <span key={line.text} className="relative block w-fit whitespace-nowrap">
               <span data-slide={line.from} className="block">
                 {line.text}
               </span>
@@ -101,14 +95,14 @@ function Caption({
       className={cn(
         "absolute top-0 hidden h-full w-36 md:block",
         side === "left"
-          ? "right-full mr-4 text-right"
-          : "left-full ml-4 text-left",
+          ? "right-full mr-3 text-right"
+          : "left-full ml-3 text-left",
       )}
     >
       <span
         data-caption
         className={cn(
-          "eyebrow absolute bottom-0 block leading-tight text-block-fg/70",
+          "eyebrow absolute bottom-0 block leading-tight text-block-fg/90",
           side === "left" ? "right-0" : "left-0",
         )}
       >
