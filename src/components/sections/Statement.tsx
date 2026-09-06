@@ -32,10 +32,12 @@ export function Statement() {
       });
       lines.forEach((line, i) => {
         const dir = line.dataset.slide === "right" ? 1 : -1;
+        // GSAP owns `transform`, so the per-line horizontal stretch rides along with the slide.
+        const scaleX = Number(line.dataset.stretch ?? 1);
         tl.fromTo(
           line,
-          { xPercent: dir * 120 },
-          { xPercent: 0, ease: "power2.out", duration: 1 },
+          { xPercent: dir * 120, scaleX },
+          { xPercent: 0, scaleX, ease: "power2.out", duration: 1 },
           i * stagger,
         );
       });
@@ -69,10 +71,15 @@ export function Statement() {
         <h2 className="display flex w-fit flex-col items-center gap-[1.1vw] text-[clamp(2.75rem,min(10.5vw,20vh),12rem)] leading-[0.9]">
           {statement.map((line) => (
             <span key={line.text} className="relative block w-fit whitespace-nowrap">
-              <span data-slide={line.from} className="block">
+              <span
+                data-slide={line.from}
+                data-stretch={line.stretch ?? 1}
+                className="block origin-center"
+                style={{ transform: `scaleX(${line.stretch ?? 1})` }}
+              >
                 {line.text}
               </span>
-              {line.label && <Caption lines={line.label} side={line.from} />}
+              {line.label && <Caption lines={line.label} side={line.from} stretch={line.stretch ?? 1} />}
             </span>
           ))}
         </h2>
@@ -85,19 +92,20 @@ export function Statement() {
 function Caption({
   lines,
   side,
+  stretch,
 }: {
   lines: readonly [string, string];
   side: "left" | "right";
+  stretch: number;
 }) {
+  // The word is scaled visually but keeps its natural layout width, so push the caption
+  // out by the overhang the stretch adds on that side.
+  const overhang = `${100 + (stretch - 1) * 50}%`;
   return (
     <span
       aria-hidden="true"
-      className={cn(
-        "absolute top-0 hidden h-full w-36 md:block",
-        side === "left"
-          ? "right-full mr-3 text-right"
-          : "left-full ml-3 text-left",
-      )}
+      className={cn("absolute top-0 hidden h-full w-36 md:block", side === "left" ? "mr-3 text-right" : "ml-3 text-left")}
+      style={side === "left" ? { right: overhang } : { left: overhang }}
     >
       <span
         data-caption

@@ -41,12 +41,18 @@ export const offers = [
 ] as const;
 
 /** Giant scroll-driven statement under the hero. Each line slides in from `from`; `label` is the small caption beside it. */
-export type StatementLine = { text: string; from: "left" | "right"; label?: [string, string] };
+export type StatementLine = {
+  text: string;
+  from: "left" | "right";
+  label?: [string, string];
+  /** Horizontal stretch of the line (1 = natural width). Height never changes. */
+  stretch?: number;
+};
 
 export const statement: StatementLine[] = [
-  { text: "Creating", from: "left", label: ["Purposeful", "design"] },
-  { text: "Websites", from: "right", label: ["Built to", "convert"] },
-  { text: "That sell", from: "left" },
+  { text: "Creating", from: "left", label: ["Purposeful", "design"], stretch: 1.12 },
+  { text: "Websites", from: "right", label: ["Built to", "convert"], stretch: 0.92 },
+  { text: "That sell", from: "left", stretch: 1.34 },
 ];
 
 export const processSteps = [
