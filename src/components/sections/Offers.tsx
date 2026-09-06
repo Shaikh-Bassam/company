@@ -1,46 +1,49 @@
 "use client";
 
-import { useRef } from "react";
-import { Button } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
-import { DisplayHeading } from "@/components/ui/DisplayHeading";
+import { Badge } from "@/components/ui/Badge";
+import { FitText } from "@/components/ui/FitText";
 import { offers } from "@/config/content";
-import { useReveal } from "@/lib/use-reveal";
 import { useContact } from "@/store/contact";
 
+/**
+ * The four ways to work with us, as a centred list of giant titles (like the
+ * reference site's "Break" list). Hovering one dims the rest and reveals its
+ * description; clicking opens the contact form with the subject prefilled.
+ */
 export function Offers() {
-  const root = useRef<HTMLElement>(null);
   const { openContact } = useContact();
-  useReveal(root);
 
   return (
-    <section id="services" ref={root} className="border-y border-line bg-surface/40 py-24 md:py-32">
-      <Container className="grid gap-12 lg:grid-cols-[1fr_1.2fr]">
-        <div className="self-start lg:sticky lg:top-32">
-          <DisplayHeading lines={["Have a project", "in mind?"]} />
-          <p className="mt-6 max-w-sm text-lg text-muted">
-            Pick the option that fits. Every conversation starts with a free scope and quote.
-          </p>
-        </div>
-        <ol className="space-y-6">
-          {offers.map((offer, i) => (
-            <li
-              key={offer.title}
-              data-reveal
-              className="flex min-h-[320px] flex-col justify-between rounded-card border border-line bg-surface p-8 md:p-10"
+    <section id="services" className="bg-panel px-5 py-24 md:px-7 md:py-32">
+      <FitText lines={["Have a project", "in mind?"]} max={210} align="center" />
+
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-4">
+        <p className="eyebrow text-muted">Four ways to work with us</p>
+        <Badge>Free scope and quote</Badge>
+      </div>
+
+      <ol className="group/list mt-16 flex flex-col items-center gap-8 md:mt-24 md:gap-10">
+        {offers.map((offer, i) => (
+          <li
+            key={offer.title}
+            className="w-full text-center transition-opacity duration-300 group-hover/list:opacity-30 hover:opacity-100!"
+          >
+            <button
+              type="button"
+              onClick={() => openContact({ subject: offer.title, source: "service" })}
+              className="group/item mx-auto block max-w-5xl rounded-sm"
             >
-              <div>
-                <span className="eyebrow">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="display mt-4 text-3xl md:text-4xl">{offer.title}</h3>
-                <p className="mt-4 max-w-md text-muted">{offer.body}</p>
-              </div>
-              <div className="mt-8">
-                <Button onClick={() => openContact({ subject: offer.title, source: "service" })}>Let&apos;s talk</Button>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </Container>
+              <span className="display flex items-start justify-center gap-2 text-[clamp(2rem,6.5vw,6.75rem)] md:gap-4">
+                <span className="eyebrow mt-[0.4em] text-muted">{String(i + 1).padStart(2, "0")}</span>
+                <span>{offer.title}</span>
+              </span>
+              <span className="mx-auto mt-3 block max-w-md text-sm leading-relaxed text-muted md:mt-0 md:max-h-0 md:overflow-hidden md:opacity-0 md:transition-all md:duration-300 md:group-hover/item:mt-4 md:group-hover/item:max-h-24 md:group-hover/item:opacity-100">
+                {offer.body}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }

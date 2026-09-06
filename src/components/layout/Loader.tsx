@@ -45,14 +45,14 @@ export function Loader({ name }: { name: string }) {
       });
       tl.to(value, {
         n: 100,
-        duration: 1.6,
+        duration: 1.8,
         ease: "power2.inOut",
         onUpdate: () => {
           if (counter.current) counter.current.textContent = String(Math.round(value.n)).padStart(3, "0");
         },
       })
-        .from("[data-letter]", { yPercent: 110, duration: 0.8, stagger: 0.04 }, 0.2)
-        .to(root.current, { yPercent: -100, duration: 0.8, ease: "power4.inOut" }, "+=0.2");
+        .from("[data-letter]", { yPercent: 110, duration: 0.9, stagger: 0.05 }, 0.15)
+        .to(root.current, { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, "+=0.25");
     },
     { scope: root },
   );
@@ -60,17 +60,18 @@ export function Loader({ name }: { name: string }) {
   if (!visible) return null;
 
   return (
-    <div ref={root} aria-hidden="true" className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-bg">
-      <span ref={counter} className="display text-[clamp(4rem,12vw,10rem)] text-accent">
-        000
-      </span>
-      <div className="mt-4 flex overflow-hidden">
+    <div ref={root} aria-hidden="true" className="fixed inset-0 z-[100] flex items-center justify-center bg-bg px-5">
+      <div className="flex overflow-hidden">
         {name.split("").map((ch, i) => (
-          <span key={i} data-letter className="display inline-block text-[clamp(1.5rem,4vw,3rem)] text-fg">
+          <span key={i} data-letter className="display inline-block text-[clamp(3.5rem,18vw,16rem)] text-fg">
             {ch === " " ? " " : ch}
           </span>
         ))}
       </div>
+      <span ref={counter} className="eyebrow absolute bottom-6 left-5 text-accent md:left-7">
+        000
+      </span>
+      <span className="eyebrow absolute bottom-6 right-5 text-muted md:right-7">Loading</span>
     </div>
   );
 }

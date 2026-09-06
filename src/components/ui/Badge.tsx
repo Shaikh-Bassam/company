@@ -1,7 +1,15 @@
-export function Badge({ children }: { children: React.ReactNode }) {
+import { cn } from "@/lib/cn";
+
+/** Outlined pill tag. `active` fills it, for use as a selected filter. */
+export function Badge({ children, active, className }: { children: React.ReactNode; active?: boolean; className?: string }) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-fg">
-      <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+    <span
+      className={cn(
+        "eyebrow inline-flex items-center rounded-full border border-current px-3 py-1.5 transition-colors duration-300",
+        active && "border-fg bg-fg text-bg",
+        className,
+      )}
+    >
       {children}
     </span>
   );

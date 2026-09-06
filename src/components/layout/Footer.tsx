@@ -1,71 +1,62 @@
 import Link from "next/link";
-import { Container } from "@/components/ui/Container";
-import { DisplayHeading } from "@/components/ui/DisplayHeading";
-import { offers } from "@/config/content";
+import { BackToTop } from "@/components/layout/BackToTop";
+import { LiveMeta } from "@/components/layout/LiveMeta";
+import { TalkBand } from "@/components/layout/TalkBand";
 import { site } from "@/config/site";
 
+/** Cream footer: follow / navigation lists, a brown "Let's talk" band, then meta. */
 export function Footer() {
   const year = new Date().getFullYear();
+  const links = [{ label: "Home", href: "/" }, ...site.nav.map((item) => ({ label: item.label, href: `/${item.href}` }))];
+  const linkCls = "font-bold uppercase text-xl transition-opacity hover:opacity-50 md:text-2xl";
+
   return (
-    <footer className="relative overflow-hidden bg-accent text-accent-fg">
-      <Container className="grid gap-12 py-20 lg:grid-cols-[1.2fr_1fr]">
-        <div className="space-y-6">
-          <DisplayHeading lines={["Ready to build", "something bigger?"]} size="small" />
-          <a href={`mailto:${site.email}`} className="inline-block text-lg font-semibold underline-offset-4 hover:underline">
-            {site.email}
-          </a>
+    <footer className="bg-paper text-paper-fg">
+      <div className="px-5 pb-10 pt-16 md:px-7 md:pt-24">
+        <div className="eyebrow flex justify-between opacity-60">
+          <span>(Follow)</span>
+          <span>(Navigation)</span>
         </div>
-        <div className="grid grid-cols-2 gap-8 text-sm sm:grid-cols-3">
-          <FooterColumn title="Site">
-            {site.nav.map((item) => (
-              <li key={item.href}>
-                <Link href={`/${item.href}`} className="hover:underline">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </FooterColumn>
-          <FooterColumn title="Services">
-            {offers.map((offer) => (
-              <li key={offer.title}>
-                <Link href="/#services" className="hover:underline">
-                  {offer.title}
-                </Link>
-              </li>
-            ))}
-          </FooterColumn>
-          <FooterColumn title="Socials">
-            {site.socials.map((s) => (
-              <li key={s.label}>
-                <a href={s.href} target="_blank" rel="noreferrer" className="hover:underline">
-                  {s.label}
+        <div className="mt-3 border-t border-paper-fg/30 pt-6 md:pt-8">
+          <div className="flex justify-between gap-8">
+            <ul className="space-y-1.5">
+              {site.socials.map((s) => (
+                <li key={s.label}>
+                  <a href={s.href} target="_blank" rel="noreferrer" className={linkCls}>
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a href={`mailto:${site.email}`} className={linkCls}>
+                  Email
                 </a>
               </li>
-            ))}
-          </FooterColumn>
+            </ul>
+            <ul className="space-y-1.5 text-right">
+              {links.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className={linkCls}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-4 flex justify-center">
+            <BackToTop className="eyebrow py-2 opacity-70 transition-opacity hover:opacity-100" />
+          </div>
         </div>
-      </Container>
-      <Container className="flex flex-wrap items-center justify-between gap-4 border-t border-accent-fg/15 py-6 text-sm">
-        <p>
+      </div>
+
+      <TalkBand />
+
+      <div className="eyebrow flex flex-wrap items-center justify-between gap-3 px-5 py-5 md:px-7">
+        <LiveMeta compact />
+        <span className="opacity-70">
           © {year} {site.name}. All rights reserved.
-        </p>
-        <p className="opacity-70">{site.location}</p>
-      </Container>
-      <div
-        aria-hidden="true"
-        className="display pointer-events-none select-none overflow-hidden text-center text-[clamp(6rem,24vw,22rem)] leading-[0.75] translate-y-[0.14em]"
-      >
-        {site.name}
+        </span>
       </div>
     </footer>
-  );
-}
-
-function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <p className="mb-4 font-semibold opacity-70">{title}</p>
-      <ul className="space-y-2">{children}</ul>
-    </div>
   );
 }

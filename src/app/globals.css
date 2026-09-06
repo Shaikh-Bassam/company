@@ -1,33 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0b0b0c;
-  --color-surface: #151517;
-  --color-surface-2: #1e1e21;
-  --color-line: rgba(255, 255, 255, 0.08);
-  --color-fg: #f4f4f0;
-  --color-muted: #8b8b93;
+  --color-bg: #0a0a0a;
+  --color-fg: #eceae3;
+  --color-muted: #8f8c85;
+  --color-line: rgba(236, 234, 227, 0.22);
+  --color-surface: #161616;
+  --color-panel: #141414;
+  --color-block: #2e1a0e;
+  --color-block-fg: #efe9d6;
+  --color-paper: #eae8e1;
+  --color-paper-fg: #0a0a0a;
   --color-accent: #c6ff3f;
-  --color-accent-fg: #0b0b0c;
+  --color-accent-fg: #0a0a0a;
   --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
   --font-sans: var(--font-manrope), system-ui, sans-serif;
-  --radius-card: 1rem;
 }
 
+/* Giant condensed display type: uppercase, tight leading. */
 @utility display {
   font-family: var(--font-display);
   text-transform: uppercase;
-  line-height: 0.9;
-  letter-spacing: -0.01em;
+  line-height: 0.86;
+  letter-spacing: 0;
 }
 
+/* Small bold caption used for labels, nav and meta. Colour is inherited. */
 @utility eyebrow {
   font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-muted);
+  letter-spacing: 0.04em;
 }
 
 html {
@@ -49,5 +54,5 @@ body {
 
 :focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }

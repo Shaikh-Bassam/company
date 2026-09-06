@@ -1,9 +1,12 @@
 export const site = {
   name: "STUDIO",
+  kicker: "Web studio",
   tagline: "Ready-made. Custom-built.",
   description:
     "A web studio selling ready-made web projects and building custom sites, apps and redesigns.",
   location: "Karachi, PK",
+  timeZone: "Asia/Karachi",
+  coordinates: "24.8607° N, 67.0011° E",
   email: "hello@example.com",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   socials: [
@@ -15,12 +18,12 @@ export const site = {
   nav: [
     { label: "Work", href: "#work" },
     { label: "Services", href: "#services" },
-    { label: "About", href: "#about" },
+    { label: "Contact", href: "#contact" },
   ],
   stats: [
     { value: "25+", label: "Projects" },
     { value: "40+", label: "Clients" },
     { value: "5+", label: "Years" },
   ],
-  marquee: ["Next.js", "React", "Shopify", "WordPress", "Tailwind", "Node.js", "Figma", "Vercel"],
+  marquee: ["Let's talk", "Let's talk", "Let's talk", "Let's talk"],
 } as const;

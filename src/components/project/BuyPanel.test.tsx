@@ -10,7 +10,7 @@ describe("BuyPanel", () => {
   it("lists tech and opens contact prefilled with the project title", () => {
     const project = projects[0];
     render(<BuyPanel project={project} />);
-    for (const t of project.tech) expect(screen.getByText(t)).toBeTruthy();
+    expect(screen.getByText(project.tech.join(", "))).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Want to buy? Contact us" }));
     expect(openContact).toHaveBeenCalledWith({ subject: project.title, source: "project" });
   });

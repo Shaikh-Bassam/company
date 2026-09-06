@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 
-type Variant = "accent" | "ghost";
+type Variant = "outline" | "solid";
 
 const base =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition-colors";
+  "inline-flex min-h-12 items-center justify-center rounded-full px-7 text-[13px] font-bold uppercase tracking-[0.04em] transition-colors duration-300";
 const variants: Record<Variant, string> = {
-  accent: "bg-accent text-accent-fg hover:bg-fg",
-  ghost: "border border-line text-fg hover:border-fg",
+  outline: "border border-current hover:bg-fg hover:text-bg",
+  solid: "bg-fg text-bg hover:bg-accent hover:text-accent-fg",
 };
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export function Button({ variant = "accent", href, onClick, type = "button", disabled, className, children }: Props) {
+export function Button({ variant = "outline", href, onClick, type = "button", disabled, className, children }: Props) {
   const cls = cn(base, variants[variant], className);
   if (href) {
     return (
@@ -34,7 +34,7 @@ export function Button({ variant = "accent", href, onClick, type = "button", dis
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={cn(cls, "disabled:cursor-not-allowed disabled:opacity-60")}
+      className={cn(cls, "disabled:cursor-not-allowed disabled:opacity-50")}
     >
       {children}
     </button>

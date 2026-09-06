@@ -6,8 +6,8 @@ import { cn } from "@/lib/cn";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 
 /**
- * Pinned, scroll-scrubbed statement: each giant line slides in from the side it names
- * (left, right, left) while the section stays fixed, then the page continues.
+ * Pinned, scroll-scrubbed statement on a deep brown block: each giant line slides in
+ * from the side it names (left, right, left) while the section stays fixed.
  */
 export function Statement() {
   const root = useRef<HTMLElement>(null);
@@ -37,11 +37,12 @@ export function Statement() {
 
   return (
     <section
+      id="about"
       ref={root}
       aria-label="Statement"
-      className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-bg py-24"
+      className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-block px-5 py-24 text-block-fg"
     >
-      <h2 className="display w-full text-center text-[clamp(3.5rem,13vw,14rem)] leading-[0.85]">
+      <h2 className="display w-full text-center text-[clamp(3rem,14vw,15rem)]">
         {statement.map((line, i) => (
           <span
             key={line.text}
@@ -68,7 +69,7 @@ function Caption({ lines, align }: { lines: readonly [string, string]; align: "l
     <span
       data-label
       className={cn(
-        "eyebrow mt-[0.55em] hidden leading-tight text-fg md:block",
+        "eyebrow mt-[0.55em] hidden leading-tight text-block-fg/70 md:block",
         align === "right" ? "text-right" : "text-left",
       )}
     >
