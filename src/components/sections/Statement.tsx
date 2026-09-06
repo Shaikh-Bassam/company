@@ -23,11 +23,14 @@ export function Statement() {
       const tl = gsap.timeline({
         // No GSAP pin: the inner block is CSS `sticky`, so nothing jumps when the section reaches the top.
         // The timeline simply scrubs across the section's extra height.
+        // Starts while the section is still entering the viewport, so the words are already
+        // moving when the sticky block locks in place. Lenis already smooths the scroll, so the
+        // scrub is direct (no second easing layer, which felt like a hitch).
         scrollTrigger: {
           trigger: root.current,
-          start: "top top",
+          start: "top 85%",
           end: "bottom bottom",
-          scrub: 0.6,
+          scrub: true,
         },
       });
       lines.forEach((line, i) => {
@@ -64,7 +67,7 @@ export function Statement() {
       id="about"
       ref={root}
       aria-label="Statement"
-      className="relative h-[170vh] bg-block text-block-fg"
+      className="relative h-[160vh] bg-block text-block-fg"
     >
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-5 py-[12vh]">
         {/* Size is capped by viewport height too, so the three lines always sit inside the screen with air above and below. */}
