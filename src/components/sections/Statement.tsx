@@ -17,20 +17,22 @@ export function Statement() {
     () => {
       if (prefersReducedMotion()) return;
       const lines = gsap.utils.toArray<HTMLElement>("[data-slide]");
-      const total = lines.length * 0.8;
+      // Lines overlap heavily so one viewport of scrolling brings all of them in.
+      const stagger = 0.18;
+      const total = (lines.length - 1) * stagger + 1;
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: root.current,
           start: "top top",
-          end: () => `+=${lines.length * 60}%`,
+          end: "+=70%",
           pin: true,
-          scrub: 1,
+          scrub: 0.6,
           anticipatePin: 1,
         },
       });
       lines.forEach((line, i) => {
         const dir = line.dataset.slide === "right" ? 1 : -1;
-        tl.fromTo(line, { xPercent: dir * 120 }, { xPercent: 0, ease: "power2.out", duration: 1 }, i * 0.8);
+        tl.fromTo(line, { xPercent: dir * 120 }, { xPercent: 0, ease: "power2.out", duration: 1 }, i * stagger);
       });
       gsap.utils.toArray<HTMLElement>("[data-caption]").forEach((caption) => {
         const track = caption.parentElement;
@@ -38,8 +40,8 @@ export function Statement() {
         tl.fromTo(
           caption,
           { y: 0 },
-          { y: () => -(track.offsetHeight - caption.offsetHeight), ease: "none", duration: total - 0.3 },
-          0.3,
+          { y: () => -(track.offsetHeight - caption.offsetHeight), ease: "none", duration: total - 0.2 },
+          0.2,
         );
       });
     },
@@ -53,7 +55,7 @@ export function Statement() {
       aria-label="Statement"
       className="flex min-h-screen flex-col items-center justify-center overflow-hidden bg-block px-5 py-20 text-block-fg"
     >
-      <h2 className="display flex w-fit flex-col items-center gap-[0.9vw] text-[clamp(3rem,14vw,15rem)] leading-[0.8]">
+      <h2 className="display flex w-fit flex-col items-center gap-[2.2vw] text-[clamp(3rem,14vw,15rem)] leading-[0.95]">
         {statement.map((line, i) => (
           <span
             key={line.text}
