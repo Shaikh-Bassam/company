@@ -19,16 +19,34 @@ function taglineLines(tagline: string): [string, string] {
 
 export function Hero({ showcase }: { showcase: Project | null }) {
   const root = useRef<HTMLElement>(null);
+  const row = useRef<HTMLDivElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
+
+      // Entrance, played once the loader finishes.
       tl.current = gsap
         .timeline({ paused: true, defaults: { ease: "power3.out" } })
         .from("[data-line]", { yPercent: 110, duration: 1, stagger: 0.1 })
         .from("[data-fade]", { y: 24, opacity: 0, duration: 0.8, stagger: 0.08 }, "-=0.6")
-        .from("[data-showcase]", { scale: 1.1, opacity: 0, duration: 1.2 }, "-=0.8");
+        .from("[data-showcase]", { opacity: 0, duration: 1.2 }, "-=0.8");
+
+      // Scroll-driven: the showcase grows to full width while DESIGN / DEVELOP move toward the centre.
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 768px)", () => {
+        const el = row.current;
+        if (!el) return;
+        gsap
+          .timeline({
+            defaults: { ease: "none" },
+            scrollTrigger: { trigger: el, start: "top 90%", end: "top 15%", scrub: true },
+          })
+          .fromTo("[data-showcase]", { width: "46%" }, { width: "100%" }, 0)
+          .fromTo('[data-word="left"]', { x: 0 }, { x: () => el.offsetWidth * 0.34 }, 0)
+          .fromTo('[data-word="right"]', { x: 0 }, { x: () => -el.offsetWidth * 0.34 }, 0);
+      });
     },
     { scope: root },
   );
@@ -37,6 +55,7 @@ export function Hero({ showcase }: { showcase: Project | null }) {
 
   const lines = taglineLines(site.tagline);
   const year = new Date().getFullYear();
+  const word = "display pointer-events-none absolute top-1/2 z-10 hidden -translate-y-1/2 text-[clamp(3rem,6vw,5.5rem)] md:block";
 
   return (
     <section ref={root} className="relative overflow-hidden pb-16 pt-36 md:pt-44">
@@ -74,21 +93,28 @@ export function Hero({ showcase }: { showcase: Project | null }) {
             <span>{site.name}</span>
             <span>{year}</span>
           </div>
-          <div className="mt-3 grid items-center gap-6 md:grid-cols-[1fr_minmax(0,560px)_1fr]">
-            <span className="display hidden text-right text-[clamp(3rem,6vw,5.5rem)] md:block">Design</span>
-            <div data-showcase className="relative aspect-video overflow-hidden rounded-card border border-line bg-surface-2">
+          <div ref={row} className="relative mt-3 flex items-center justify-center">
+            <span data-word="left" className={`${word} left-0`}>
+              Design
+            </span>
+            <div
+              data-showcase
+              className="relative aspect-video w-full overflow-hidden rounded-card border border-line bg-surface-2 md:w-[46%]"
+            >
               {showcase && (
                 <Image
                   src={showcase.cover}
                   alt={showcase.title}
                   fill
                   priority
-                  sizes="(max-width: 768px) 100vw, 560px"
+                  sizes="(max-width: 768px) 100vw, 1220px"
                   className="object-cover"
                 />
               )}
             </div>
-            <span className="display hidden text-[clamp(3rem,6vw,5.5rem)] md:block">Develop</span>
+            <span data-word="right" className={`${word} right-0`}>
+              Develop
+            </span>
           </div>
         </div>
       </Container>

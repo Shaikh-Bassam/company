@@ -40,6 +40,15 @@ export const offers = [
   },
 ] as const;
 
+/** Giant scroll-driven statement under the hero. Each line slides in from `from`; `label` is the small caption beside it. */
+export type StatementLine = { text: string; from: "left" | "right"; label?: [string, string] };
+
+export const statement: StatementLine[] = [
+  { text: "Creating", from: "left", label: ["Purposeful", "design"] },
+  { text: "Websites", from: "right", label: ["Built to", "convert"] },
+  { text: "That sell", from: "left" },
+];
+
 export const processSteps = [
   { title: "Pick a project", body: "Browse the catalogue or describe what you need." },
   { title: "Contact us", body: "We reply within 24 hours with a price and timeline." },
