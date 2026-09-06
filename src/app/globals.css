@@ -40,6 +40,12 @@ html {
   scroll-behavior: auto;
 }
 
+/* Giant type and off-screen slide-ins must never create a horizontal scrollbar. */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-fg);

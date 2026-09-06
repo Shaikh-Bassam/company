@@ -4,24 +4,7 @@ import { useRef, useState } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { markLoaderDone } from "@/lib/loader-events";
 
-const SESSION_KEY = "loader-done";
-
-function seenThisSession(): boolean {
-  try {
-    return sessionStorage.getItem(SESSION_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-function rememberSeen(): void {
-  try {
-    sessionStorage.setItem(SESSION_KEY, "1");
-  } catch {
-    /* private mode: ignore */
-  }
-}
-
+/** Intro loader. Runs on every page load (like the reference site); skipped only under reduced motion. */
 export function Loader({ name }: { name: string }) {
   const root = useRef<HTMLDivElement>(null);
   const counter = useRef<HTMLSpanElement>(null);
@@ -29,7 +12,7 @@ export function Loader({ name }: { name: string }) {
 
   useGSAP(
     () => {
-      if (prefersReducedMotion() || seenThisSession()) {
+      if (prefersReducedMotion()) {
         setVisible(false);
         markLoaderDone();
         return;
@@ -38,7 +21,6 @@ export function Loader({ name }: { name: string }) {
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
         onComplete: () => {
-          rememberSeen();
           setVisible(false);
           markLoaderDone();
         },

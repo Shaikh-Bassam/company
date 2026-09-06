@@ -2,13 +2,14 @@ import Link from "next/link";
 import { BackToTop } from "@/components/layout/BackToTop";
 import { LiveMeta } from "@/components/layout/LiveMeta";
 import { TalkBand } from "@/components/layout/TalkBand";
+import { RollText } from "@/components/ui/RollText";
 import { site } from "@/config/site";
 
 /** Cream footer: follow / navigation lists, a brown "Let's talk" band, then meta. */
 export function Footer() {
   const year = new Date().getFullYear();
   const links = [{ label: "Home", href: "/" }, ...site.nav.map((item) => ({ label: item.label, href: `/${item.href}` }))];
-  const linkCls = "font-bold uppercase text-xl transition-opacity hover:opacity-50 md:text-2xl";
+  const linkCls = "group block font-bold uppercase text-xl md:text-2xl";
 
   return (
     <footer className="bg-paper text-paper-fg">
@@ -23,21 +24,21 @@ export function Footer() {
               {site.socials.map((s) => (
                 <li key={s.label}>
                   <a href={s.href} target="_blank" rel="noreferrer" className={linkCls}>
-                    {s.label}
+                    <RollText>{s.label}</RollText>
                   </a>
                 </li>
               ))}
               <li>
                 <a href={`mailto:${site.email}`} className={linkCls}>
-                  Email
+                  <RollText>Email</RollText>
                 </a>
               </li>
             </ul>
             <ul className="space-y-1.5 text-right">
               {links.map((l) => (
-                <li key={l.href}>
+                <li key={l.href} className="flex justify-end">
                   <Link href={l.href} className={linkCls}>
-                    {l.label}
+                    <RollText>{l.label}</RollText>
                   </Link>
                 </li>
               ))}

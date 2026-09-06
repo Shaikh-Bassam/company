@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LiveMeta } from "@/components/layout/LiveMeta";
+import { RollText } from "@/components/ui/RollText";
 import { site } from "@/config/site";
 import { scrollToId, scrollToTop } from "@/lib/scroll";
 
@@ -31,14 +32,14 @@ export function Navbar() {
         <LiveMeta compact />
         <ul className="eyebrow flex items-center gap-4 md:gap-7">
           <li>
-            <Link href="/" onClick={goHome} className="transition-opacity hover:opacity-60">
-              Home
+            <Link href="/" onClick={goHome} className="group block">
+              <RollText>Home</RollText>
             </Link>
           </li>
           {site.nav.map((item) => (
             <li key={item.href}>
-              <Link href={`/${item.href}`} onClick={goTo(item.href)} className="transition-opacity hover:opacity-60">
-                {item.label}
+              <Link href={`/${item.href}`} onClick={goTo(item.href)} className="group block">
+                <RollText>{item.label}</RollText>
               </Link>
             </li>
           ))}

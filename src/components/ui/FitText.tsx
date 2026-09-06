@@ -8,8 +8,13 @@ type Props = {
   as?: "h1" | "h2" | "p" | "div";
   /** Upper bound for the computed font size, in px. */
   max?: number;
+  /** Desktop (≥768px) upper bound as a share of the viewport width (e.g. 19 → 19vw). */
+  maxVw?: number;
   align?: "left" | "center";
   className?: string;
+  /** Custom line markup (e.g. per-character spans). Defaults to the plain string. */
+  renderLine?: (line: string) => React.ReactNode;
+  onMouseEnter?: () => void;
 };
 
 /**
@@ -17,7 +22,16 @@ type Props = {
  * width of its container (like the edge-to-edge titles on the reference site).
  * Each line is wrapped so entrance animations can target `[data-line]`.
  */
-export function FitText({ lines, as: Tag = "h2", max = 360, align = "left", className }: Props) {
+export function FitText({
+  lines,
+  as: Tag = "h2",
+  max = 360,
+  maxVw,
+  align = "left",
+  className,
+  renderLine,
+  onMouseEnter,
+}: Props) {
   const ref = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
@@ -32,7 +46,9 @@ export function FitText({ lines, as: Tag = "h2", max = 360, align = "left", clas
       el.querySelectorAll<HTMLElement>("[data-fit-line]").forEach((line) => {
         widest = Math.max(widest, line.getBoundingClientRect().width);
       });
-      if (widest > 0) el.style.fontSize = `${Math.min(max, (available / widest) * 100 * 0.99)}px`;
+      const desktop = window.innerWidth >= 768;
+      const cap = maxVw && desktop ? Math.min(max, (maxVw / 100) * window.innerWidth) : max;
+      if (widest > 0) el.style.fontSize = `${Math.min(cap, (available / widest) * 100 * 0.99)}px`;
     };
 
     fit();
@@ -42,19 +58,20 @@ export function FitText({ lines, as: Tag = "h2", max = 360, align = "left", clas
     const observer = new ResizeObserver(fit);
     observer.observe(el.parentElement ?? el);
     return () => observer.disconnect();
-  }, [lines, max]);
+  }, [lines, max, maxVw]);
 
   const Comp = Tag as React.ElementType;
   return (
     <Comp
       ref={ref}
+      onMouseEnter={onMouseEnter}
       className={cn("display block w-full", align === "center" && "text-center", className)}
       style={{ fontSize: "clamp(2.5rem, 12vw, 22rem)" }}
     >
       {lines.map((line) => (
         <span key={line} className="block overflow-hidden whitespace-nowrap">
           <span data-fit-line data-line className="inline-block">
-            {line}
+            {renderLine ? renderLine(line) : line}
           </span>
         </span>
       ))}
