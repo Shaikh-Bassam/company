@@ -2,16 +2,31 @@
 
 import Image from "next/image";
 import { useCallback, useRef } from "react";
+import { Button } from "@/components/ui/Button";
 import { FitText } from "@/components/ui/FitText";
 import { site } from "@/config/site";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { useLoaderDone } from "@/lib/loader-events";
+import { scrollToId } from "@/lib/scroll";
 import type { Project } from "@/lib/types";
 
 /** "Ready-made. Custom-built." → ["Ready-made", "Custom-built"] */
 function taglineWords(tagline: string): [string, string] {
   const [a = "", b = ""] = tagline.replace(/\.$/, "").split(". ");
   return [a, b];
+}
+
+/** "**Buy** a project" → the starred words rendered in the foreground colour, the rest muted. */
+function renderIntro(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/).map((part, i) =>
+    part.startsWith("**") ? (
+      <span key={i} className="font-semibold text-fg">
+        {part.slice(2, -2)}
+      </span>
+    ) : (
+      part
+    ),
+  );
 }
 
 /** Each letter carries a copy below it; hovering the title rolls every letter up once, staggered. */
@@ -98,7 +113,31 @@ export function Hero({ showcase }: { showcase: Project | null }) {
       ref={root}
       className="relative flex min-h-[100svh] flex-col justify-between overflow-hidden px-5 pb-10 pt-20 md:px-7 md:pt-24"
     >
-      <FitText as="h1" lines={[site.name]} max={420} maxVw={19} renderLine={renderRollingChars} onMouseEnter={rollTitle} />
+      <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
+        <div className="md:w-[58%]">
+          <FitText as="h1" lines={[site.name]} max={420} maxVw={19} renderLine={renderRollingChars} onMouseEnter={rollTitle} />
+        </div>
+
+        {/* Intro, CTA and stats beside the title, like the Figma hero's right column. */}
+        <div className="md:w-[36%] md:max-w-md md:pb-[0.35em]">
+          <p data-fade className="max-w-sm text-lg leading-snug text-muted md:text-xl">
+            {renderIntro(site.hero.intro)}
+          </p>
+          <div data-fade className="mt-6">
+            <Button variant="solid" onClick={() => scrollToId("work")}>
+              {site.hero.cta}
+            </Button>
+          </div>
+          <dl data-fade className="mt-8 flex gap-10">
+            {site.stats.map((s) => (
+              <div key={s.label}>
+                <dt className="display text-4xl md:text-5xl">{s.value}</dt>
+                <dd className="eyebrow mt-1 text-muted">{s.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
 
       <div className="my-8 md:my-10">
         <div data-fade className="eyebrow mx-auto flex w-full justify-between text-muted md:w-[40%]">

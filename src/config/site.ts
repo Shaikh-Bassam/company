@@ -20,6 +20,11 @@ export const site = {
     { label: "Services", href: "#services" },
     { label: "Contact", href: "#contact" },
   ],
+  hero: {
+    /** `**word**` marks the emphasised words. */
+    intro: "**Buy** a ready-made project or **commission** a custom build. Launch in days, not months.",
+    cta: "See our work",
+  },
   stats: [
     { value: "25+", label: "Projects" },
     { value: "40+", label: "Clients" },
