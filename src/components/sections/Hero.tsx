@@ -48,7 +48,9 @@ export function Hero({ showcase }: { showcase: Project | null }) {
         .from("[data-fade]", { opacity: 0, y: 16, duration: 0.8, stagger: 0.06 }, "-=0.7")
         .from("[data-showcase]", { opacity: 0, duration: 1 }, "-=0.7");
 
-      // Scroll-driven: the showcase grows to full width while the two words move toward the centre.
+      // Scroll-driven: the showcase grows while the two words move toward the centre.
+      // Growth is a transform (scale), never `width`: animating width changed the hero's height
+      // on every frame, which shifted the whole page under the scroll and read as a glitch.
       const mm = gsap.matchMedia();
       mm.add("(min-width: 768px)", () => {
         const el = row.current;
@@ -58,9 +60,10 @@ export function Hero({ showcase }: { showcase: Project | null }) {
             defaults: { ease: "none" },
             scrollTrigger: { trigger: el, start: "top 70%", end: "top 5%", scrub: true },
           })
-          .fromTo("[data-showcase]", { width: "40%" }, { width: "100%" }, 0)
+          .fromTo("[data-showcase]", { scale: 1 }, { scale: 1.6, transformOrigin: "50% 50%" }, 0)
           .fromTo('[data-word="left"]', { x: 0 }, { x: () => el.offsetWidth * 0.3 }, 0)
-          .fromTo('[data-word="right"]', { x: 0 }, { x: () => -el.offsetWidth * 0.3 }, 0);
+          .fromTo('[data-word="right"]', { x: 0 }, { x: () => -el.offsetWidth * 0.3 }, 0)
+          .to("[data-scrollhint]", { opacity: 0, duration: 0.4 }, 0);
       });
     },
     { scope: root },
@@ -103,11 +106,11 @@ export function Hero({ showcase }: { showcase: Project | null }) {
           <span>{year}</span>
         </div>
 
-        <div ref={row} className="relative mt-2 flex justify-center">
+        <div ref={row} className="relative z-10 mt-2 flex justify-center">
           <span data-word="left" aria-hidden="true" className={`${word} left-0`}>
             {left}
           </span>
-          <div data-showcase className="relative aspect-video w-full overflow-hidden rounded-sm bg-surface md:w-[40%]">
+          <div data-showcase className="relative aspect-video w-full overflow-hidden rounded-sm bg-surface will-change-transform md:w-[40%]">
             {showcase && (
               <Image
                 src={showcase.cover}
@@ -131,7 +134,7 @@ export function Hero({ showcase }: { showcase: Project | null }) {
         </p>
       </div>
 
-      <div data-fade className="relative h-px bg-line">
+      <div data-fade data-scrollhint className="relative h-px bg-line">
         <span className="eyebrow absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-bg px-3 text-muted">
           Scroll down
         </span>

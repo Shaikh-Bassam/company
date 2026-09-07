@@ -28,7 +28,8 @@ export function Statement() {
         // scrub is direct (no second easing layer, which felt like a hitch).
         scrollTrigger: {
           trigger: root.current,
-          start: "top 85%",
+          // Only a short lead-in before the block locks at the top; ~80% of the motion happens while pinned.
+          start: "top 20%",
           end: "bottom bottom",
           scrub: true,
         },
@@ -67,7 +68,7 @@ export function Statement() {
       id="about"
       ref={root}
       aria-label="Statement"
-      className="relative h-[160vh] bg-block text-block-fg"
+      className="relative h-[170vh] bg-block text-block-fg"
     >
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-5 py-[12vh]">
         {/* Size is capped by viewport height too, so the three lines always sit inside the screen with air above and below. */}
