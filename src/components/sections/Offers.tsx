@@ -83,9 +83,10 @@ export function Offers() {
                 <li
                   key={offer.title}
                   className={cn(
-                    "w-full text-center transition-[opacity,transform] duration-500 ease-out",
+                    // Tailwind v4 `scale-*` sets the CSS `scale` property, so that is what must transition.
+                    "w-full text-center transition-[opacity,scale] duration-500 ease-out",
                     DIM[distance],
-                    isActive ? "scale-100" : "scale-[0.92]",
+                    isActive ? "scale-100" : "scale-[0.96]",
                   )}
                 >
                   <button
