@@ -19,7 +19,8 @@ export function Statement() {
       if (prefersReducedMotion()) return;
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
-        scrollTrigger: { trigger: root.current, start: "top 35%", toggleActions: "play none none none" },
+        // Fires only when the block is about to lock at the top, so the whole reveal is seen.
+        scrollTrigger: { trigger: root.current, start: "top 12%", toggleActions: "play none none none" },
       });
 
       gsap.utils.toArray<HTMLElement>("[data-slide]").forEach((line, i) => {
@@ -30,8 +31,8 @@ export function Statement() {
           line,
           // Same units on both ends (all %) or GSAP cannot interpolate and just snaps to the end.
           { clipPath: fromRight ? "inset(0% 0% 0% 100%)" : "inset(0% 100% 0% 0%)", xPercent: fromRight ? 6 : -6 },
-          { clipPath: "inset(0% 0% 0% 0%)", xPercent: 0, duration: 1.1 },
-          i * 0.22,
+          { clipPath: "inset(0% 0% 0% 0%)", xPercent: 0, duration: 1.4 },
+          i * 0.4,
         );
       });
 
@@ -41,8 +42,8 @@ export function Statement() {
         tl.fromTo(
           caption,
           { y: 0, opacity: 0 },
-          { y: () => -(track.offsetHeight - caption.offsetHeight), opacity: 1, duration: 1.2, ease: "power2.out" },
-          0.35,
+          { y: () => -(track.offsetHeight - caption.offsetHeight), opacity: 1, duration: 1.6, ease: "power2.out" },
+          0.5,
         );
       });
     },
