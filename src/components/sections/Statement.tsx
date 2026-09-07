@@ -28,8 +28,9 @@ export function Statement() {
         // (left edge for left lines, right edge for right lines), with only a tiny nudge.
         tl.fromTo(
           line,
-          { clipPath: fromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)", xPercent: fromRight ? 6 : -6 },
-          { clipPath: "inset(0 0 0 0)", xPercent: 0, duration: 1.1 },
+          // Same units on both ends (all %) or GSAP cannot interpolate and just snaps to the end.
+          { clipPath: fromRight ? "inset(0% 0% 0% 100%)" : "inset(0% 100% 0% 0%)", xPercent: fromRight ? 6 : -6 },
+          { clipPath: "inset(0% 0% 0% 0%)", xPercent: 0, duration: 1.1 },
           i * 0.22,
         );
       });
