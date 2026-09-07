@@ -5,34 +5,61 @@ import { Badge } from "@/components/ui/Badge";
 import { FitText } from "@/components/ui/FitText";
 import { offers } from "@/config/content";
 import { cn } from "@/lib/cn";
-import { ScrollTrigger, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { useContact } from "@/store/contact";
 
-/** Extra scroll distance (in vh) each offer gets while the list stays fixed on screen. */
-const SCROLL_PER_OFFER_VH = 60;
+/** Extra scroll distance (in vh) each offer gets while the screen stays fixed. */
+const SCROLL_PER_OFFER_VH = 55;
+
+/** Opacity by distance from the centred line: centre, neighbour, further away. */
+const DIM = ["opacity-100", "opacity-40", "opacity-15"] as const;
 
 /**
- * The four ways to work with us. The list is pinned (CSS sticky) while the user scrolls
- * through a tall track; scroll progress picks the active line, which is fully lit and shows
- * its description while the others dim. Clicking opens the contact form with the subject
- * prefilled. Under reduced motion every line stays lit and nothing depends on scroll.
+ * The four ways to work with us, presented like rolling film credits: the screen stays
+ * fixed while the list glides upward so each line passes through the exact centre. The
+ * centred line is lit and shows its description; neighbours fade with distance. Clicking a
+ * line opens the contact form with the subject prefilled. Under reduced motion the list is
+ * static and every line stays lit.
  */
 export function Offers() {
   const { openContact } = useContact();
   const track = useRef<HTMLDivElement>(null);
+  const screen = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLOListElement>(null);
   const [active, setActive] = useState<number | null>(null);
 
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      const count = offers.length;
+      const el = list.current;
+      const viewport = screen.current;
+      if (!el || !viewport) return;
+      const lines = Array.from(el.children) as HTMLElement[];
+      const last = lines.length - 1;
+
+      // Offset that puts line `i` at the vertical centre of the fixed screen (transform-free measurements).
+      const centreOn = (i: number) => {
+        const line = lines[i];
+        return viewport.clientHeight / 2 - (el.offsetTop + line.offsetTop + line.offsetHeight / 2);
+      };
+
       setActive(0);
-      ScrollTrigger.create({
-        trigger: track.current,
-        start: "top top",
-        end: "bottom bottom",
-        onUpdate: (self) => setActive(Math.min(count - 1, Math.floor(self.progress * count))),
-      });
+      gsap.fromTo(
+        el,
+        { y: () => centreOn(0) },
+        {
+          y: () => centreOn(last),
+          ease: "none",
+          scrollTrigger: {
+            trigger: track.current,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: true,
+            invalidateOnRefresh: true,
+            onUpdate: (self) => setActive(Math.round(self.progress * last)),
+          },
+        },
+      );
     },
     { scope: track },
   );
@@ -47,14 +74,19 @@ export function Offers() {
       </div>
 
       <div ref={track} className="relative" style={{ height: `${100 + offers.length * SCROLL_PER_OFFER_VH}vh` }}>
-        <div className="sticky top-0 flex h-screen flex-col justify-center">
-          <ol className="flex flex-col items-center gap-5 md:gap-7">
+        <div ref={screen} className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
+          <ol ref={list} className="relative flex flex-col items-center gap-10 will-change-transform md:gap-14">
             {offers.map((offer, i) => {
-              const isActive = active === null || active === i;
+              const distance = active === null ? 0 : Math.min(2, Math.abs(active - i));
+              const isActive = distance === 0;
               return (
                 <li
                   key={offer.title}
-                  className={cn("w-full text-center transition-opacity duration-500", isActive ? "opacity-100" : "opacity-25")}
+                  className={cn(
+                    "w-full text-center transition-[opacity,transform] duration-500 ease-out",
+                    DIM[distance],
+                    isActive ? "scale-100" : "scale-[0.92]",
+                  )}
                 >
                   <button
                     type="button"
