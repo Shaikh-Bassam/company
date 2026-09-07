@@ -24,6 +24,8 @@ export const site = {
     /** `**word**` marks the emphasised words. */
     intro: "**Buy** a ready-made project or **commission** a custom build. Launch in days, not months.",
     cta: "See our work",
+    /** Optional showreel for the hero box, e.g. "/hero-reel.mp4" in `public/`. Empty → featured project cover. */
+    video: "",
   },
   stats: [
     { value: "25+", label: "Projects" },
