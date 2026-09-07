@@ -36,14 +36,26 @@ export function Statement() {
         );
       });
 
+      // Captions fade in with the reveal, but their position is tied to the scroll: while the
+      // block is stuck they ride from the bottom of their word to its top, and back when scrolling up.
       gsap.utils.toArray<HTMLElement>("[data-caption]").forEach((caption) => {
         const track = caption.parentElement;
         if (!track) return;
-        tl.fromTo(
+        tl.fromTo(caption, { opacity: 0 }, { opacity: 1, duration: 1 }, 0.5);
+        gsap.fromTo(
           caption,
-          { y: 0, opacity: 0 },
-          { y: () => -(track.offsetHeight - caption.offsetHeight), opacity: 1, duration: 1.6, ease: "power2.out" },
-          0.5,
+          { y: 0 },
+          {
+            y: () => -(track.offsetHeight - caption.offsetHeight),
+            ease: "none",
+            scrollTrigger: {
+              trigger: root.current,
+              start: "top top",
+              end: "bottom bottom",
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          },
         );
       });
     },
@@ -55,7 +67,7 @@ export function Statement() {
       id="about"
       ref={root}
       aria-label="Statement"
-      className="relative h-[130vh] bg-block text-block-fg"
+      className="relative h-[160vh] bg-block text-block-fg"
     >
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-5 py-[12vh]">
         {/* Size is capped by viewport height too, so the three lines always sit inside the screen with air above and below. */}
