@@ -23,10 +23,15 @@ export function Statement() {
       });
 
       gsap.utils.toArray<HTMLElement>("[data-slide]").forEach((line, i) => {
-        const dir = line.dataset.slide === "right" ? 1 : -1;
-        // The line's clip wrapper hides everything outside the word's own box, so this reads
-        // as a wipe from the word's starting edge rather than a fly-in from the screen edge.
-        tl.fromTo(line, { xPercent: dir * 70, opacity: 0 }, { xPercent: 0, opacity: 1, duration: 1 }, i * 0.22);
+        const fromRight = line.dataset.slide === "right";
+        // The word stays where it belongs and is unmasked from its own starting edge
+        // (left edge for left lines, right edge for right lines), with only a tiny nudge.
+        tl.fromTo(
+          line,
+          { clipPath: fromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)", xPercent: fromRight ? 6 : -6 },
+          { clipPath: "inset(0 0 0 0)", xPercent: 0, duration: 1.1 },
+          i * 0.22,
+        );
       });
 
       gsap.utils.toArray<HTMLElement>("[data-caption]").forEach((caption) => {
