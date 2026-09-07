@@ -62,3 +62,12 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
+
+/* Tailwind v4 preflight drops the pointer cursor on buttons; restore it for every clickable control. */
+button:not(:disabled),
+[role="button"]:not(:disabled),
+[role="tab"]:not(:disabled),
+label[for],
+summary {
+  cursor: pointer;
+}
