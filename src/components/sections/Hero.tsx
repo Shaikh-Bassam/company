@@ -18,8 +18,6 @@ function taglineWords(tagline: string): [string, string] {
 
 /** How much the showcase grows by the end of the scroll (1.6 = 40% → 64% of the row). */
 const SHOWCASE_SCALE = 1.6;
-/** Gap, in px, between a word and the grown showcase edge at the end of the scroll. */
-const WORD_GAP = 24;
 
 /** "**Buy** a project" → the starred words rendered in the foreground colour, the rest muted. */
 function renderIntro(text: string) {
@@ -74,26 +72,15 @@ export function Hero({ showcase }: { showcase: Project | null }) {
       const mm = gsap.matchMedia();
       mm.add("(min-width: 768px)", () => {
         const el = row.current;
-        const media = el?.querySelector<HTMLElement>("[data-showcase]");
-        const leftWord = el?.querySelector<HTMLElement>('[data-word="left"]');
-        const rightWord = el?.querySelector<HTMLElement>('[data-word="right"]');
-        if (!el || !media || !leftWord || !rightWord) return;
-
-        // Each word travels exactly far enough to hug the grown media's edge, so the two
-        // never cross each other in the middle. Layout offsets ignore transforms, so these
-        // stay correct on refresh.
-        const grownHalf = () => (media.offsetWidth * SHOWCASE_SCALE) / 2;
-        const leftTravel = () => el.offsetWidth / 2 - grownHalf() - WORD_GAP - (leftWord.offsetLeft + leftWord.offsetWidth);
-        const rightTravel = () => el.offsetWidth / 2 + grownHalf() + WORD_GAP - rightWord.offsetLeft;
-
+        if (!el) return;
         gsap
           .timeline({
             defaults: { ease: "none" },
             scrollTrigger: { trigger: el, start: "top 70%", end: "top 5%", scrub: true, invalidateOnRefresh: true },
           })
           .fromTo("[data-showcase]", { scale: 1 }, { scale: SHOWCASE_SCALE, transformOrigin: "50% 50%" }, 0)
-          .fromTo(leftWord, { x: 0 }, { x: leftTravel }, 0)
-          .fromTo(rightWord, { x: 0 }, { x: rightTravel }, 0)
+          .fromTo('[data-word="left"]', { x: 0 }, { x: () => el.offsetWidth * 0.3 }, 0)
+          .fromTo('[data-word="right"]', { x: 0 }, { x: () => -el.offsetWidth * 0.3 }, 0)
           .to("[data-scrollhint]", { opacity: 0, duration: 0.4 }, 0);
       });
     },
