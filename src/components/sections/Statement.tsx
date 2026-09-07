@@ -6,9 +6,10 @@ import { cn } from "@/lib/cn";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 
 /**
- * Pinned, scroll-scrubbed statement on a deep brown block. Each giant line slides in
- * from the side it names while the section stays fixed; the small captions start at
- * the bottom of their word and ride up to its top as the user scrolls.
+ * Giant statement on a deep brown block. The block sticks briefly while a short,
+ * time-based reveal plays once: each line wipes in from its own edge (never from off
+ * screen), one after another with a small delay, and the captions ride up beside
+ * their word. Nothing depends on how far the user keeps scrolling.
  */
 export function Statement() {
   const root = useRef<HTMLElement>(null);
@@ -16,47 +17,26 @@ export function Statement() {
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      const lines = gsap.utils.toArray<HTMLElement>("[data-slide]");
-      // Lines overlap heavily so one viewport of scrolling brings all of them in.
-      const stagger = 0.18;
-      const total = (lines.length - 1) * stagger + 1;
       const tl = gsap.timeline({
-        // No GSAP pin: the inner block is CSS `sticky`, so nothing jumps when the section reaches the top.
-        // The timeline simply scrubs across the section's extra height.
-        // Starts while the section is still entering the viewport, so the words are already
-        // moving when the sticky block locks in place. Lenis already smooths the scroll, so the
-        // scrub is direct (no second easing layer, which felt like a hitch).
-        scrollTrigger: {
-          trigger: root.current,
-          // Only a short lead-in before the block locks at the top; ~80% of the motion happens while pinned.
-          start: "top 20%",
-          end: "bottom bottom",
-          scrub: true,
-        },
+        defaults: { ease: "power3.out" },
+        scrollTrigger: { trigger: root.current, start: "top 35%", toggleActions: "play none none none" },
       });
-      lines.forEach((line, i) => {
+
+      gsap.utils.toArray<HTMLElement>("[data-slide]").forEach((line, i) => {
         const dir = line.dataset.slide === "right" ? 1 : -1;
-        // GSAP owns `transform`, so the per-line horizontal stretch rides along with the slide.
-        const scaleX = Number(line.dataset.stretch ?? 1);
-        tl.fromTo(
-          line,
-          { xPercent: dir * 120, scaleX },
-          { xPercent: 0, scaleX, ease: "power2.out", duration: 1 },
-          i * stagger,
-        );
+        // The line's clip wrapper hides everything outside the word's own box, so this reads
+        // as a wipe from the word's starting edge rather than a fly-in from the screen edge.
+        tl.fromTo(line, { xPercent: dir * 70, opacity: 0 }, { xPercent: 0, opacity: 1, duration: 1 }, i * 0.22);
       });
+
       gsap.utils.toArray<HTMLElement>("[data-caption]").forEach((caption) => {
         const track = caption.parentElement;
         if (!track) return;
         tl.fromTo(
           caption,
-          { y: 0 },
-          {
-            y: () => -(track.offsetHeight - caption.offsetHeight),
-            ease: "none",
-            duration: total - 0.2,
-          },
-          0.2,
+          { y: 0, opacity: 0 },
+          { y: () => -(track.offsetHeight - caption.offsetHeight), opacity: 1, duration: 1.2, ease: "power2.out" },
+          0.35,
         );
       });
     },
@@ -68,24 +48,25 @@ export function Statement() {
       id="about"
       ref={root}
       aria-label="Statement"
-      className="relative h-[170vh] bg-block text-block-fg"
+      className="relative h-[130vh] bg-block text-block-fg"
     >
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-5 py-[12vh]">
         {/* Size is capped by viewport height too, so the three lines always sit inside the screen with air above and below. */}
         <h2 className="display flex w-fit flex-col items-center gap-[1.1vw] text-[clamp(2.75rem,min(10.5vw,20vh),12rem)] leading-[0.9]">
-          {statement.map((line) => (
-            <span key={line.text} className="relative block w-fit whitespace-nowrap">
-              <span
-                data-slide={line.from}
-                data-stretch={line.stretch ?? 1}
-                className="block origin-center"
-                style={{ transform: `scaleX(${line.stretch ?? 1})` }}
-              >
-                {line.text}
+          {statement.map((line) => {
+            const stretch = line.stretch ?? 1;
+            return (
+              <span key={line.text} className="relative block w-fit whitespace-nowrap">
+                {/* Stretch lives on the clip wrapper so the wipe never cuts off the widened glyphs. */}
+                <span className="block origin-center overflow-hidden" style={{ transform: `scaleX(${stretch})` }}>
+                  <span data-slide={line.from} className="block">
+                    {line.text}
+                  </span>
+                </span>
+                {line.label && <Caption lines={line.label} side={line.from} stretch={stretch} />}
               </span>
-              {line.label && <Caption lines={line.label} side={line.from} stretch={line.stretch ?? 1} />}
-            </span>
-          ))}
+            );
+          })}
         </h2>
       </div>
     </section>
