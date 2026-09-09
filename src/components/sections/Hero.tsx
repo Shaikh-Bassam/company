@@ -155,15 +155,18 @@ export function Hero({ showcase }: { showcase: Project | null }) {
           <div data-showcase className="relative aspect-video w-full overflow-hidden rounded-sm bg-surface will-change-transform md:w-[40%]">
             {site.hero.video ? (
               <video
-                src={site.hero.video}
-                poster={showcase?.cover}
+                poster={site.hero.videoPoster || showcase?.cover}
                 autoPlay
                 muted
                 loop
                 playsInline
+                preload="auto"
                 aria-label={`${site.name} showreel`}
                 className="absolute inset-0 h-full w-full object-cover"
-              />
+              >
+                {site.hero.videoWebm && <source src={site.hero.videoWebm} type="video/webm" />}
+                <source src={site.hero.video} type="video/mp4" />
+              </video>
             ) : (
               showcase && (
                 <Image

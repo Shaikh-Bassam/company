@@ -24,8 +24,10 @@ export const site = {
     /** `**word**` marks the emphasised words. */
     intro: "**Buy** a ready-made project or **commission** a custom build. Launch in days, not months.",
     cta: "See our work",
-    /** Optional showreel for the hero box, e.g. "/hero-reel.mp4" in `public/`. Empty → featured project cover. */
-    video: "",
+    /** Showreel for the hero box (files in `public/`). Set `video` to "" to fall back to the featured project cover. */
+    video: "/hero-reel.mp4",
+    videoWebm: "/hero-reel.webm",
+    videoPoster: "/hero-reel-poster.jpg",
   },
   stats: [
     { value: "25+", label: "Projects" },
