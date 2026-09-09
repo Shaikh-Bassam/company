@@ -40,3 +40,15 @@ Copy `.env.example` to `.env.local`:
 - `src/actions/inquiry.ts` contact-form Server Action; `src/lib/projects.ts` data accessors (swap for DB in phase 2)
 
 Design spec: `docs/superpowers/specs/2026-09-06-public-site-design.md`.
+
+## Leads sheet (Google Sheets)
+
+Every contact-form inquiry is emailed (Resend) and, when `SHEETS_WEBHOOK_URL` is set, also appended
+to a Google Sheet so website leads and cold-calling leads live in one place.
+
+1. Create a Google Sheet, open Extensions → Apps Script, paste `scripts/apps-script/inquiries.gs`.
+2. Set `SECRET` in the script to a random string.
+3. Deploy → New deployment → Web app → Execute as **Me**, access **Anyone** → copy the URL.
+4. In Vercel add `SHEETS_WEBHOOK_URL=<that url>` and `SHEETS_WEBHOOK_SECRET=<the secret>`, redeploy.
+
+Rows land in the `Leads` tab with Status `New`; the tab is created with headers on the first inquiry.

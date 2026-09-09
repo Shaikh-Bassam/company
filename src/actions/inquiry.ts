@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { site } from "@/config/site";
 import { inquirySchema, type Inquiry, type InquiryField, type InquiryState } from "@/lib/inquiry-schema";
+import { postInquiryToSheet } from "@/lib/inquiry-sheet";
 
 const FIELDS: InquiryField[] = ["name", "email", "subject", "message", "source"];
 
@@ -25,7 +26,8 @@ export async function submitInquiry(_prev: InquiryState, formData: FormData): Pr
   }
 
   try {
-    await sendInquiryEmail(parsed.data);
+    // Email is required; the sheet mirror is best effort and never fails the submission.
+    await Promise.all([sendInquiryEmail(parsed.data), postInquiryToSheet(parsed.data)]);
     return { status: "success" };
   } catch (err) {
     console.error("[inquiry] send failed", err);
