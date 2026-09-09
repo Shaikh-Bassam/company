@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-bg: #0a0a0a;
+  --color-fg: #eceae3;
+  --color-muted: #8f8c85;
+  --color-line: rgba(236, 234, 227, 0.22);
+  --color-surface: #161616;
+  --color-panel: #141414;
+  --color-block: #2e1a0e;
+  --color-block-fg: #efe9d6;
+  --color-paper: #eae8e1;
+  --color-paper-fg: #0a0a0a;
+  --color-accent: #c6ff3f;
+  --color-accent-fg: #0a0a0a;
+  --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Giant condensed display type: uppercase, tight leading. */
+@utility display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  line-height: 0.86;
+  letter-spacing: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Small bold caption used for labels, nav and meta. Colour is inherited. */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: auto;
+}
+
+/* Giant type and off-screen slide-ins must never create a horizontal scrollbar. */
+html,
+body {
+  overflow-x: clip;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Tailwind v4 preflight drops the pointer cursor on buttons; restore it for every clickable control. */
+button:not(:disabled),
+[role="button"]:not(:disabled),
+[role="tab"]:not(:disabled),
+label[for],
+summary {
+  cursor: pointer;
 }

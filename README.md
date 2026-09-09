@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Company website (phase 1: public site)
 
-## Getting Started
+Dark-themed marketing site for a web studio that sells ready-made projects and builds custom sites.
+Built with Next.js 16 (App Router), Tailwind v4, GSAP + Lenis, Resend.
 
-First, run the development server:
+## Scripts
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+| Command | What it does |
+|---|---|
+| `npm run dev` | start the dev server on http://localhost:3000 |
+| `npm run build` | production build (also prerenders every `/projects/[slug]`) |
+| `npm test` | unit tests (Vitest + Testing Library) |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | `next typegen` + `tsc --noEmit` |
+| `npm run placeholders` | regenerate SVG placeholder images in `public/projects/` from `src/data/projects.ts` |
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy `.env.example` to `.env.local`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Purpose |
+|---|---|
+| `RESEND_API_KEY` | Resend API key. Leave empty in development to log inquiries to the terminal instead of emailing. |
+| `CONTACT_TO_EMAIL` | Where contact-form inquiries are delivered |
+| `CONTACT_FROM_EMAIL` | Sender shown on inquiry emails (must be a verified Resend sender) |
+| `NEXT_PUBLIC_SITE_URL` | Absolute site URL, used for Open Graph metadata |
 
-## Learn More
+## Editing content
 
-To learn more about Next.js, take a look at the following resources:
+- Company name, tagline, nav, stats, socials, marquee: `src/config/site.ts`
+- Services, offers ("Want a custom build?" …), process steps: `src/config/content.ts`
+- Projects for sale: `src/data/projects.ts` (until the admin panel in phase 2 replaces it). Put real images in
+  `public/projects/<slug>/` and update the `cover` / `gallery` paths.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/app` routes: `/` (landing), `/projects/[slug]` (detail), `not-found`
+- `src/components/sections` landing sections, `src/components/layout` loader/nav/footer/smooth scroll,
+  `src/components/project` project card/gallery/buy panel, `src/components/ui` primitives
+- `src/actions/inquiry.ts` contact-form Server Action; `src/lib/projects.ts` data accessors (swap for DB in phase 2)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Design spec: `docs/superpowers/specs/2026-09-06-public-site-design.md`.
