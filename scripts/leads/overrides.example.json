@@ -1,0 +1,12 @@
+{
+ "Bridge Boilers & Bathrooms": {"pitch":"New website","note":"Domain live but Wix site returns 404 (unpublished). Pitch: get a real site up fast."},
+ "JD Plumbing & Heating Manchester Ltd": {"pitch":"New website","note":"Domain points to 127.0.0.1 - site is dead, still ranks on Google. Pitch: rebuild before rankings drop."},
+ "HS NW Ltd (Heating Solutions North West)": {"pitch":"New website","note":"Website refuses connections (hosting down). Pitch: rebuild + hosting."},
+ "Homesafe Plumbing & Heating Ltd": {"pitch":"New website","note":"Domain no longer resolves (expired?). Pitch: new site, still has 10 Yell reviews to leverage."},
+ "HubFM Emergency Response Plumbers": {"pitch":"New website","note":"Only had a Google Business Site, which Google shut down - now 404. Pitch: proper site."},
+ "Ardent Engineering Ltd": {"pitch":"Redesign","note":"Site has no HTTPS and no mobile viewport (very dated). Pitch: redesign."},
+ "South Manchester Heating Ltd": {"pitch":"Redesign","note":"Copyright 2017, dated design. Pitch: redesign."},
+ "E2 Boiler Repair Chadderton": {"pitch":"New website","note":"Runs on a long subdomain of a consultancy (no own domain). Pitch: own domain + site."},
+ "FlowClear Drainage Ltd": {"pitch":"Redesign","note":"Yell-built template site (paying Yell monthly). Pitch: own site, cheaper long term."},
+ "Worrall Services": {"pitch":"Redesign","note":"Yell-built template site (paying Yell monthly). Pitch: own site, cheaper long term."}
+}
