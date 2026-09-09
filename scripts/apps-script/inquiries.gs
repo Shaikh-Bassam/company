@@ -134,7 +134,8 @@ function setup() {
     today
       .getRange("A2")
       .setFormula(
-        '=IFERROR(SORT(FILTER(Leads!A2:P, Leads!N2:N<>"", Leads!N2:N<=TODAY(), Leads!J2:J<>"Won", Leads!J2:J<>"Lost", Leads!J2:J<>"Not interested"), 14, TRUE), "Nothing due 🎉")'
+        // `< TODAY()+1` so a date that carries a time-of-day still counts as "due today".
+        '=IFERROR(SORT(FILTER(Leads!A2:P, Leads!N2:N<>"", Leads!N2:N<TODAY()+1, Leads!J2:J<>"Won", Leads!J2:J<>"Lost", Leads!J2:J<>"Not interested"), 14, TRUE), "Nothing due 🎉")'
       );
   }
 
@@ -203,7 +204,7 @@ function doPost(e) {
   row["Status"] = data.status || "New";
   row["Subject / Interest"] = data.subject || "";
   row["Next action"] = data.nextAction || "Reply within 24h";
-  row["Next action date"] = new Date();
+  row["Next action date"] = startOfDay(new Date());
   row["Notes"] = [data.source ? "form source: " + data.source : "", data.message || ""].filter(String).join(" — ");
 
   sheet.appendRow(
@@ -212,6 +213,10 @@ function doPost(e) {
     })
   );
   return respond({ ok: true });
+}
+
+function startOfDay(d) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
 function respond(obj) {
