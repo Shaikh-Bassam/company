@@ -52,10 +52,19 @@ function setup() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   if (ss.getName() !== "STUDIO Leads") ss.rename("STUDIO Leads");
   var sheet = ss.getSheetByName(SHEET_NAME);
+  if (sheet && sheet.getLastRow() > 0 && !hasCurrentHeaders(sheet)) {
+    // Old layout with data in it: keep it aside, never delete anything.
+    sheet.setName(uniqueName(ss, SHEET_NAME + " (old)"));
+    sheet = null;
+  }
   if (!sheet) {
-    sheet = ss.getSheets()[0];
-    if (sheet.getLastRow() === 0) sheet.setName(SHEET_NAME);
-    else sheet = ss.insertSheet(SHEET_NAME);
+    var first = ss.getSheets()[0];
+    if (first.getLastRow() === 0 && first.getName() !== "Today") {
+      first.setName(SHEET_NAME);
+      sheet = first;
+    } else {
+      sheet = ss.insertSheet(SHEET_NAME, 0);
+    }
   }
 
   // Header row
@@ -132,6 +141,20 @@ function setup() {
   ss.setActiveSheet(sheet);
 }
 
+/** True when row 1 already holds the current HEADERS. */
+function hasCurrentHeaders(sheet) {
+  var row = sheet.getRange(1, 1, 1, HEADERS.length).getValues()[0];
+  return HEADERS.every(function (h, i) {
+    return row[i] === h;
+  });
+}
+
+function uniqueName(ss, base) {
+  var name = base;
+  for (var i = 2; ss.getSheetByName(name); i++) name = base + " " + i;
+  return name;
+}
+
 function setDropdown(sheet, column, rows, values) {
   var rule = SpreadsheetApp.newDataValidation().requireValueInList(values, true).setAllowInvalid(false).build();
   sheet.getRange(2, column, rows, 1).setDataValidation(rule);
@@ -159,7 +182,7 @@ function doPost(e) {
 
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) {
+  if (!sheet || !hasCurrentHeaders(sheet)) {
     setup();
     sheet = ss.getSheetByName(SHEET_NAME);
   }
