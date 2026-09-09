@@ -42,3 +42,8 @@ next-env.d.ts
 
 # superpowers scratch (SDD ledgers, briefs)
 .superpowers/
+
+# lead research data (phone numbers etc.)
+scripts/leads/leads.json
+scripts/leads/audited.json
+scripts/leads/overrides.json
